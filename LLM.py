@@ -79,7 +79,7 @@ Here is the paragraph, pick out only rules from this paragraph dont print senten
 "
 '''
 
-        self.prompt_initial_rulestojson = '''
+        self.prompt_initial_ruletojson = '''
 Convert into expression the statement. Also identify the objects present in the expression and express them in the json format
 
 Following are the examples:
@@ -450,14 +450,14 @@ Now provide output for the below statement
 
 Statement - '''
 
-    def from_string(self, rule: str) -> str:                                          #generates rule for a single sentence
+    def json_from_string(self, rule: str) -> str:                                          #generates rule for a single sentence
         self.generator.warm_up()
         prompt = self.prompt_initial_ruletojson + rule
         result = self.generator.run(prompt)["replies"][0]
 
         return result
 
-    def from_list(self, rules: list, csv_path: str):                                  #generates rules for a list of rules and saves a csv in the same location as the source pdf
+    def json_from_list(self, rules: list, csv_path: str):                                  #generates rules for a list of rules and saves a csv in the same location as the source pdf
         self.generator.warm_up()
         final_df = pd.DataFrame(columns = ['Rules', 'Expression'], dtype="str") #Emtpy DataFrame created with columns Rules and Expression
         for i in range(0, len(rules)):
@@ -479,7 +479,7 @@ Statement - '''
                 process_line += pdf_text_data[i]
                 i += 1
             
-            prompt = self.prompt_initial_classifer + process_line + '"'
+            prompt = self.prompt_initial_classifier + process_line + '"'
             result = self.generator.run(prompt)["replies"][0]
             rules_list.append(result.split("[]"))                           #Splits the generated sentences into list of strings at [ & ] tokens
             
@@ -498,7 +498,7 @@ if __name__ == "__main__":
     abc = LLM_Pipeline()
     abc.classifier(
         '''
-1INJECTION MOLDINGDESIGN GUIDELINES­­­­INJECTION MOLDED PARTSInjection molding is used for manufacturing a wide variety of parts, from small components like AAA battery boxes to large components like truck body panels.
+1INJECTION MOLDINGDESIGN GUIDELINES ­­­­INJECTION MOLDED PARTSInjection molding is used for manufacturing a wide variety of parts, from small components like AAA battery boxes to large components like truck body panels.
 
 Once a component is designed, a mold is made and preci-sion machined to form the features of the desired part.
 
@@ -738,3 +738,4 @@ Proprietary information do not distribute without prior consent from Stratasys D
 
 '''
     )
+    abc.json_from_string('The bending radius of the part should be no less than four times the material thickness')
