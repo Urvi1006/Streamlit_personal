@@ -16,7 +16,7 @@ class LLM_Pipeline:
                                                 #"stopping_criteria": stopping_critera
                                                               },
                                  generation_kwargs={"max_new_tokens": 400})
-        torch.cuda.set_device(1)
+        # torch.cuda.set_device(1)
 
         self.prompt_initial_classifier = '''
     Act like an industry expert who wants to get rules from a given set of sentences. Your task will be to return the sentences that are rules as output.
