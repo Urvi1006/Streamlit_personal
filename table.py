@@ -49,10 +49,10 @@ def PIL_to_cv(pil_img):
     return cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
 
 
-def pdf_to_images(pdf_path, output_folder_name='OUTPUT_MASTER/output/images'):
+def pdf_to_images(pdf_path, output_folder_name='OUTPUTS_MASTER/output/images'):
     # Create the output folder if it doesn't exist
     os.makedirs(output_folder_name, exist_ok=True)
-    os.makedirs("OUTPUT_MASTER\output\\tables\Output",exist_ok = True)
+    os.makedirs("OUTPUTS_MASTER\output\\tables\Output",exist_ok = True)
 
     # Open the PDF file
     pdf_document = fitz.open(pdf_path)
@@ -504,7 +504,7 @@ def extract_text_from_pdf(pdf_path):
             text += page.extract_text()
             
     return text
-def extract_tables(pdf_path, output_folder_name='OUTPUT_MASTER/output/images', output_csv_name='OUTPUT_MASTER/output/tables'):
+def extract_tables(pdf_path, output_folder_name='OUTPUTS_MASTER/output/images', output_csv_name='OUTPUTS_MASTER/output/tables'):
 
     image_paths_list = pdf_to_images(pdf_path, output_folder_name)
     te = TableExtractionPipeline()
