@@ -489,21 +489,21 @@ class TableExtractionPipeline():
 
             return df
 
-def extract_text_from_pdf(pdf_path):
-    text = ""
-    # Open the PDF file in binary mode
-    with open(pdf_path, 'rb') as file:
-        # Create a PdfFileReader object
-        pdf_reader = PyPDF2.PdfReader(file)
+# def extract_text_from_pdf(pdf_path):
+#     text = ""
+#     # Open the PDF file in binary mode
+#     with open(pdf_path, 'rb') as file:
+#         # Create a PdfFileReader object
+#         pdf_reader = PyPDF2.PdfReader(file)
         
-        # Iterate through each page and extract text
-        for page_number in range(len(pdf_reader.pages)):
-            # Get the page object
-            page = pdf_reader.pages[page_number]
-            # Extract text from the page
-            text += page.extract_text()
+#         # Iterate through each page and extract text
+#         for page_number in range(len(pdf_reader.pages)):
+#             # Get the page object
+#             page = pdf_reader.pages[page_number]
+#             # Extract text from the page
+#             text += page.extract_text()
             
-    return text
+#     return text
 def extract_tables(pdf_path, output_folder_name='OUTPUTS_MASTER/output/images', output_csv_name='OUTPUTS_MASTER/output/tables'):
 
     image_paths_list = pdf_to_images(pdf_path, output_folder_name)
@@ -560,15 +560,15 @@ def extract_tables_algo(pdf_path, output_folder_name):
 
     print(f"Total number of tables extracted: {total_tables}")
 def dual_pipeline(pdf_path):
-    # Extract text from the PDF
-    text = extract_text_from_pdf(pdf_path)
-    text = text.strip()
+    # # Extract text from the PDF
+    # text = extract_text_from_pdf(pdf_path)
+    # text = text.strip()
 
-    if len(text) > 100:
-        print("Text length is greater than 100 characters. Using algorithmic extraction.")
-        extract_tables_algo(pdf_path, output_folder_name="OUTPUTS_MASTER/Output")
-    else:
-        print("Text length is less than or equal to 100 characters. Using regular extraction.")
+    # if len(text) > 100:
+    #     print("Text length is greater than 100 characters. Using algorithmic extraction.")
+    #     extract_tables_algo(pdf_path, output_folder_name="OUTPUTS_MASTER/Output")
+    # else:
+    #     print("Text length is less than or equal to 100 characters. Using regular extraction.")
         extract_tables(pdf_path, output_folder_name="OUTPUTS_MASTER/Output")
 
 
