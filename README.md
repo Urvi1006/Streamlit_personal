@@ -33,7 +33,7 @@ pip install streamlit
 ```bash
 streamlit run rule_gen_framework.py
 ```
-# Streamlit runs on the browser
+### Streamlit runs on the browser
 Select the required pdf from data folder in repository
 
 Clicking on next will move to next step in pipeline
@@ -41,3 +41,8 @@ Clicking on next will move to next step in pipeline
 To extract images and tables click on its button on left side panel.
 
 The streamlit and table extraction take some time to run.
+
+### Running the pipeline without streamlit
+```bash
+python main.py
+```
