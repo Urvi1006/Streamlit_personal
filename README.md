@@ -1,29 +1,35 @@
 # __Installation setup__
-## Create a new conda environment 
+
+### Clone the Repo 
+```bash
+git clone https://github.com/Urvi1006/Streamlit_personal.git
+```
+### Create a new conda environment 
 ```bash
 conda create --name hcl_streamlit python=3.10
 ```
-## Activate the conda environment
+### Activate the conda environment
 ```bash
 conda activate hcl_streamlit
 ```
-## Check python version
+### Check python version
 ```bash
 python --version
 ```
-## Install requirements.txt
+
+### Install requirements.txt
 ```bash
 pip install -r requirements.txt
 ```
-## __Upgrade the pymupdf library__
+### __Upgrade the pymupdf library__
 ```bash
 pip install pymupdf --upgrade
 ```
-## If streamlit not installed 
+### If streamlit not installed 
 ```bash
 pip install streamlit
 ```
-## Run the streamlit
+### Run the streamlit
 ```bash
 streamlit run rule_gen_framework.py
 ```
