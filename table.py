@@ -505,8 +505,8 @@ class TableExtractionPipeline():
             
 #     return text
 def extract_tables(pdf_path, output_folder_name='OUTPUTS_MASTER/output/images', output_csv_name='OUTPUTS_MASTER/output/tables'):
-
-    image_paths_list = pdf_to_images(pdf_path, output_folder_name)
+    # print("./data"+pdf_path.name,"<><><><><>>><><>><>><>>>><><")
+    image_paths_list = pdf_to_images('./data/' + pdf_path.name, output_folder_name)
     te = TableExtractionPipeline()
 
     for img_path in image_paths_list:
