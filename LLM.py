@@ -14,7 +14,7 @@ class LLM_Pipeline:
                                                 "bnb_4bit_compute_dtype":torch.bfloat16,
                                                 },
                                                               },
-                                 generation_kwargs={"max_new_tokens": 400})
+                                 generation_kwargs={"max_new_tokens": 1500})
         # torch.cuda.set_device(1)
 
         self.prompt_initial_classifier = '''
@@ -468,273 +468,32 @@ Statement - '''
         final_df.to_csv(csv_path)
        
 
-    def classifier(self, pdf_text_data: list) -> list:                                #classifies the data into rules and not rules
+    def classifier(self, pdf_text_data: list[str]) -> list:                                #classifies the data into rules and not rules
         self.generator.warm_up()
-        rules_list = []
+        rules_list = ""
 
-        for i in range(0, len(pdf_text_data)):
-            process_line = ""
-            while(len(process_line.split()) < 4000):                             #Set the maximum possible token length to near 4000. Limit of Mistral is 7000
-                process_line += pdf_text_data[i]
-                i += 1
+        process_line = ""
+        for line in pdf_text_data:
             
+            print(line)                             #Set the maximum possible token length to near 4000. Limit of Mistral is 7000
+            process_line += line
+
+            if len(process_line.split()) < 1000:
+                continue    
+                 
             prompt = self.prompt_initial_classifier + process_line + '"'
             result = self.generator.run(prompt)["replies"][0]
-            rules_list.append(result.split("[]"))                           #Splits the generated sentences into list of strings at [ & ] tokens
-            
-        print(rules_list)
-        return rules_list
+            rules_list += result                           #Splits the generated sentences into list of strings at [ & ] tokens
+            process_line = ""
+
+        print(rules_list.split("[]\n"))
+        return rules_list.split("[]\n")
 
     def pdf_query_function(self, pdf_text_data: list, pdf_path: str):                 #Function which takes in the pdf_text_data and the pdf path for mass processing of relevant data
-        self.from_list(self.classifier(pdf_text_data), self.csv_path_gen(pdf_path))         #Takes the returned list of rules from classifier to the from_list funcntion and generates a .csv file
+        self.json_from_list(self.classifier(pdf_text_data), self.csv_path_gen(pdf_path))         #Takes the returned list of rules from classifier to the from_list funcntion and generates a .csv file
 
     def csv_path_gen(self, pdf_path: str):                                            #Generates the .csv file path in the same location as the source pdf
         csv_path = pdf_path[:-4]
         return csv_path + "_result.csv"
 
 
-if __name__ == "__main__":
-    abc = LLM_Pipeline()
-    abc.classifier(
-        '''
-1INJECTION MOLDINGDESIGN GUIDELINES ­­­­INJECTION MOLDED PARTSInjection molding is used for manufacturing a wide variety of parts, from small components like AAA battery boxes to large components like truck body panels.
-
-Once a component is designed, a mold is made and preci-sion machined to form the features of the desired part.
-
-The injection mold-ing takes place when a thermoplastic or thermoset plastic material is fed into a heated barrel, mixed, and forced into the metal mold cavity where it cools and hardens before being removed.
-
-TOOLINGMold and die are used interchangeably to describe the tooling applied to produce plastic parts.
-
-They are typically constructed from pre-hardened steel, hardened steel, aluminum, and/or beryllium-copper alloy.
-
-Of these materials, hardened steel molds are the most expensive to make, but offer the user a long lifespan, which offsets the cost per part by spreading it over a larger quantity.
-
-For low volumes or large components, pre-hardened steel molds provide a less wear-resistant and less expensive option.
-
-The most economical molds are produced out of aluminum.
-
-When de-signed and built using CNC machines or Electrical Discharge Machining processes, these molds can economically produce tens of thousands to hundreds of thousands of parts.
-
-Note that beryllium copper is often used in areas of the mold that require fast heat removal or places that see the most shear heat generated.
-
-INJECTION MOLDINGThe injection molding process uses a granular plastic that is gravity fed from a hopper.
-
-A screw-type plunger forces the material into a heated chamber, called a barrel, where it is melted.
-
-The plunger continues to advance, push-ing the polymer through a nozzle at the end of the barrel that is pressed against the mold.
-
-The plastic enters the mold cavity through a gate and runner system.
-
-After the cavity is filled, a holding pressure is maintained to compensate for material shrinkage as it cools.
-
-At this same time, the
-
-STRATASYSDIRECT.COM | 888-311-10172­­­WALL SECTION CONSIDERATIONSWALL THICKNESSCost savings are highest when components have a mini-mum wall thickness, as long as that thickness is con-sistent with the part’s function and meets all mold filling considerations.
-
-As would be expected, parts cool faster with thin wall thicknesses, which means that cycle times are shorter, resulting in more parts per hour.
-
-Further, thin parts weigh less, using less plastic per part.
-
-On average, the wall thickness of an injection molded part ranges from 2mm to 4mm (.080 inch to .160 inch).
-
-Thin wall injection molding can produce walls as thin as .05mm (.020 inch).
-
-UNIFORM WALLSParts with walls of uniform thickness allow the mold cavity to fill more easily since the molten plastic does not have to be forced through varying restrictions as it fills.
-
-If the walls are not uniform the thin section cools first, then as the thick section cools and shrinks it builds stresses near the boundary area between the two.
-
-Be-cause the thin section has already hardened, it doesn’t yield.
-
-As the thick section yields, it leads to warping or twisting of the part, which, if severe enough, can cause cracks.
-
-Figure 1: Uniform wall thickness can reduce or eliminate warpingINJECTION MOLDING MATERIALSMaterials Selection: Many types of thermoplastic ma­terials are available.
-
-Selection depends on the specific application.
-
-The chart below shows some of the most common materials being used.
-
-INJECTION MOLDING ENGINEERED THERMOPLASTIC MATERIALSNylonsPolyphenylene Sulfide PPSPolycarbonatesPolyehter SulfoneAcetalsPolyetheretherketone PEEKAcrylicsFluoropolymersPolypropylenesPolyether Imide PEIPolyethylenesPolyphenylene Oxide PPOAcrylonitrile Butadiene StyrenePolyurethanes PURThermoplastic ElastomersPolyphthalamide PPAscrew turns so that the next shot is moved into a ready position, and the barrel retracts as the next shot is heated.
-
-Because the mold is kept cold, the plastic solidifies soon after the mold is filled.
-
-Once the part inside the mold cools completely, the mold opens, and the part is ejected.
-
-The next injection molding cycle starts the moment the mold closes and the polymer is injected into the mold cavity.
-
-3VOIDS AND SHRINKAGETroublesome shrinkage problems can be caused by the intersection of walls that are not uniform in wall thick­ness.
-
-Examples might include ribs, bosses, or any other projection of the nominal wall.
-
-Since thicker walls solidify slower, the area they are attached to at the nominal wall will shrink as the projection shrinks.
-
-This can result in a sunken area in the nominal wall.
-
-Such shrinkage can be minimized if a rib thickness is maintained to between 50 and 60 percent of the walls they are attached to.
-
-To further our example, bosses located into a corner will produce very thick walls, causing sink, unless isolated as in the illustration below.
-
-Figure 5: Boss design to eliminate sinksWARPAGEThe dynamic of thin and thick sections and their cooling times creates warping as well.
-
-As would be expected, as a thick section cools it shrinks, and the material for the shrinkage comes from the unsolidified areas causing the part to warp.
-
-Other causes for warping might include the molding pro­cess conditions, injection pressures, cooling rates, packing problems, and mold temperatures.
-
-Resin manufacturers’ process guidelines should be followed for best results.
-
-Figure 6: Warpage caused by non-uniform wall thicknessWhat if you cannot have uniform walls (due to design limitations)?
-
-If design limitations make it impossible to have uniform wall thicknesses, the change in thickness should be as gradual as possible.
-
-Coring is a method where plastic is removed from the thick area, which helps to keep wall sections uniform, eliminating the problem altogether.
-
-Figure 2: Transition of wall thicknessGussets are support structures that can be designed into the part to reduce the possibility of warping.
-
-Figure 3: Coring to eliminate sinksFigure 4: Gusseting to reduce warping
-
-STRATASYSDIRECT.COM | 888-311-10174RIBS Ribs are used in a design to increase the bending stiff­ness of a part without adding thickness.
-
-Ribs increase the moment of inertia, which increases the bending stiffness.
-
-Bending Stiffness = E (young’s Modulus) x I (Moment of Inertia)Rib thickness should be less than wall thickness to min­imize sinking effects.
-
-The recommended rib thickness should not exceed 60 percent of the nominal thickness.
-
-Plus, the rib should be attached with corner radii as generous as possible.
-
-Figure 9: Proper rib design reduces sinkingFigure 7: Boss design guidelinesWall thicknesses for bosses should be less than 60 per­cent of the nominal wall to minimize sinking.
-
-However, if the boss is not in a visible area, then the wall thick­ness can be increased to allow for increased stresses imposed by self-tapping screws.
-
-BOSSESBosses are used to facilitate the registration of mating parts, for attaching fasteners such as screws, or for ac­cepting threaded inserts.
-
-Figure 8: Boss strengthening techniqueThe base radius should be a minimum of 0.25 X thick­ness.
-
-Bosses can be strengthened by incorporating gus­sets at the base or by using connecting ribs attaching to nearby walls.
-
-5RIB INTERSECTIONSBecause the thickness of the material will be greater at the rib intersections, coring or another means of ma­terial removal should be employed to avoid excessive sinking from occurring on the opposite side.
-
-Figure 10: Coring at rib intersectionsRIB GUILDELINESThe height of a rib should be limited to less than three times its thickness.
-
-It is better to use multiple ribs to increase bending stiffness than to use one very tall rib.
-
-RIB/LOAD AFFECT ON STIFFNESSA rib is oriented in such a way as to provide maximum bending stiffness to the part.
-
-By paying attention to part geometry, designers must be conscious of the orienta­tion of the rib to the bending load or there will be no increase in stiffness.
-
-Figure 11: Design guidelines for ribsFigure 12: Rib/ load orientation affects part stiffness; Draft angles for ribs should be a minimum of 0.25 to 0.5 degree of draft per sideDRAFT AND TEXTUREMold drafts facilitate part removal from the mold.
-
-The draft must be in an offset angle that is parallel to the mold opening and closing.
-
-The ideal draft angle for a given part depends on the depth of the part in the mold and its required end-use function.
-
-Figure 12: Draft AngleAllowing for as much draft as possible will permit parts to release from the mold easily.
-
-Typically, one to two degrees of drafts with an additional 1.5 degrees per 0.25mm depth of texture is enough to do the trick.
-
-The mold part line will need to be located in a way that splits the draft in order to minimize it.
-
-If no draft is ac­ceptable due to design considerations, a side action mold may be required.
-
-STRATASYSDIRECT.COM | 888-311-10176At corners, the suggested inside radius is 0.5 times the material thickness and the outside radius is 1.5 times the material thickness.
-
-A bigger radius should be used if part design allows.­­Figure 14: Radius RecommendationINSERTSInserts used in plastic parts provide a place for fasteners such as machine screws.
-
-The advantage of using inserts is that they are often made of brass and are robust.
-
-They allow for a great many cycles of assembly and disas-sembly.
-
-Inserts are installed in injection molded parts us-ing one of the following methods:­­­­­­­­TEXTURES AND LETTERINGWhether to incorporate identifying information or to in-clude as an aesthetic addition, textures and lettering can be included onto mold surfaces for the end user or fac-tory purposes.
-
-Texturing may also hide surface defects such as knit lines and other imperfections.
-
-The depth of the texture or letters is somewhat limited, and extra draft needs to be provided to allow for part removal from the mold without dragging or marring the part.
-
-Draft for texturing is somewhat dependent on the part design and specific texture desired.
-
-As a general guide-line, 1.5° min.
-
-per 0.025mm (0.001 inch) depth of tex-ture needs to be allowed for in addition to the normal draft.
-
-Usually for general office equipment such as lap-top computers a texture depth of 0.025 mm (0.001 inch) is used and the minimum draft recommended is 1.5°.
-
-More may be needed for heavier textured surfaces such as leather (with a depth of 0.125 mm/0.005 inch) that requires a minimum draft of 7.5°.
-
-SHARP CORNERSSharp corners greatly increase stress concentration, which, when high enough, can lead to part failure.
-
-Sharp corners often come about in non-obvious places, such as a boss attached to a surface, or a strengthening rib.
-
-The radius of sharp corners needs to be watched closely because the stress concentra-tion factor varies with radius for a given thickness.
-
-As illustrated in the chart to the left, the stress concen-tration factor is high for R/T values less than 0.5, but for R/T values over 0.5 the concentration lowers.
-
-The stress concentration factor is a multiplier that greatly increases stress.
-
-It is recommended that an inside radius be a minimum of one times the thickness.
-
-In addition to reducing stresses, the fillet r adius p ro-vides a streamlined flow path for the molten plastic, re-sulting in an easier fill of the mold.
-
-Figure 13: Stress Concentration Factor, K
-
-7Figure 15: Threaded InsertLIVING HINGESLiving hinges are thin sections of plastic that connect two segments of a part to keep them together and allow the part to “hinge” open and closed.
-
-Typically these hinges are incorporated in containers that are used in high vol­ume applications such as toolboxes and CD cases.
-
-Figure 16: Box with Living HingeFigure 17: Living Hinge Design for Polypropylene and PolyethyleneMaterials used in molding living hinges must be very flexible, such as polypropylene or polyethylene.
-
-A well-designed living hinge typically flexes more than a million cycles without failure.
-
-ULTRASONIC INSERTIONUltrasonic insertion is when an insert is “vibrated” into place by using an ultrasonic transducer called the “horn” that is mounted into the ultrasonic device.
-
-For optimum performance, the horn is specially designed for each ap­plication.
-
-Ultrasonic energy is converted to thermal en­ergy by the vibrating action, which allows the insert to be melted into the hole.
-
-This type of insertion can be done rapidly, with short cycle times, and low residual stresses.
-
-Good melt flow characteristics for the plastic is neces­sary for the process to be successful.
-
-THERMAL INSERTIONThis method uses a heated tool, like a soldering iron, to first heat the insert until it melts the plastic, and then presses the insert into place.
-
-As the plastic cools it shrinks around the insert, capturing it.
-
-The advantage of this method is that the special tooling is inexpensive and simple to use.
-
-Care does need to be taken not to overheat the insert or plastic, which could result in a non-secure fit and degradation of the plastic.
-
-MOLDED-INTo mold inserts into place during the molding cycle, core pins are used to hold the inserts.
-
-The injected plastic completely encases the insert, which provides excellent retention.
-
-This process may slow the molding cycle be­cause inserts have to be hand loaded, but it also elimi­nates secondary operations such as the ultrasonic and thermal insertion methods.
-
-Finally, for high volume pro­duction runs, an automatic tool can load the inserts but this increases the complexity and cost of the mold.
-
-STRATASYSDIRECT.COM | 888-311-10178­GAS ASSIST MOLDINGThis process is used to hollow out thick sections of a part where coring is not an option and sink is not accept-able.
-
-Gas assist molding can be applied to almost any thermoplastic, and most conventional molding machines can be adapted for gas assist molding.­Figure 18: Gas Assist MoldingOVERMOLDINGThe overmolding process is when a flexible material is molded onto a more rigid material called a substrate.
-
-If properly selected, the overmolded (flexible material) will form a strong bond with the substrate.
-
-Bonding agents are no longer required to achieve optimum bond be-tween the substrate and overmold.
-
-INSERT MOLDING The most widely used overmolding process is insert molding.
-
-This is where a pre-molded substrate is placed into a mold and the flexible material is shot directly over it.
-
-The advantage of this process is that conventional, single shot injection molding machines can be used.
-
-TWO SHOT MOLDINGThis is a multi-material overmolding process that requires a special injection molding machine that incorporates two or more barrels.
-
-This allows two or more materials to be shot into the same mold during the same molding cycle.
-
-The two shot molding is usually associated with high volume production of greater than 250,000 cycles.
-
-Copyright © 2015 Stratasys Direct, Inc.
-
-All rights reserved.
-
-Proprietary information do not distribute without prior consent from Stratasys Direct Manufacturing.
-
-'''
-    )
-    abc.json_from_string('The bending radius of the part should be no less than four times the material thickness')

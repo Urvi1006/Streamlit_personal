@@ -4,8 +4,9 @@ from text import extract_sentences
 from image import extract_images
 from table import dual_pipeline
 import os
-from classification import extract_rules_to_csv  # Importing the extract_rules_to_csv function
-from rules_json import convert_to_json, download_json_file  # Importing JSON conversion functions
+from classification import extract_rules_to_csv  # Dummy: extract_rules_to_csv function
+from rules_json import convert_to_json, download_json_file  # Dummy: conversion functions
+from LLM import LLM_Pipeline
 import base64
 
 # from highlighimport jsont import highlight_rules  # Importing the highlight_rules function
@@ -31,13 +32,14 @@ def main():
 def show_upload_page():
     st.title("Upload PDF")
     uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"], key="pdf_file_uploader")
-
+    LLM_pipe = LLM_Pipeline()
+    
     if uploaded_file is not None:
         st.success("PDF file uploaded successfully!")
         if st.button("Next"):
             st.session_state.extracted_text = extract_uploaded_text(uploaded_file)
             st.session_state.page = "Text"
-            st.session_state.initial_rules = extract_rules_to_csv(st.session_state.extracted_text)
+            st.session_state.initial_rules = LLM_pipe.classifier(st.session_state.extracted_text)
             st.rerun()
 
 def extract_uploaded_text(uploaded_file):
@@ -46,6 +48,7 @@ def extract_uploaded_text(uploaded_file):
 
 def show_text_extraction():
     st.title("Text Extraction")
+    LLM_pipe = LLM_Pipeline()
     if st.button("Back"):
         st.session_state.page = "Upload"
         st.rerun()
@@ -56,7 +59,7 @@ def show_text_extraction():
         st.write(sentence)
 
     if st.button("Next"):
-        st.session_state.extracted_rules = extract_rules_to_csv(st.session_state.extracted_text)
+        st.session_state.extracted_rules = LLM_pipe.classifier(st.session_state.extracted_text)
         st.session_state.page = "Rules"
         st.rerun()
 
@@ -102,12 +105,13 @@ def show_highlighted_text():
 
 def show_json_rules():
     st.title("Extracted Rules (JSON Format)")
+    LLM_pipe = LLM_Pipeline()
     if st.button("Back"):
         st.session_state.page = "Highlighted Text"  # Go back to the highlighted text page
         st.rerun()
 
     extracted_rules = st.session_state.extracted_rules
-    json_data = convert_to_json(extracted_rules)
+    json_data = LLM_pipe.json_from_string(extracted_rules) # LLM JSON
     st.code(json_data, language='json')
     st.markdown(download_json_file(json_data), unsafe_allow_html=True)
 
