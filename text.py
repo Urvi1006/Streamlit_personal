@@ -19,9 +19,9 @@ def extract_sentences(pdf_bytes):
     return sentences
 
 
-if __name__ == "__main__":
-    pdf_path = ''
-    with open(pdf_path, 'rb') as f:
-        file = f.read()
-    sentances = extract_sentences(file)
-    print(sentances)
+# if __name__ == "__main__":
+#     pdf_path = ''
+#     with open(pdf_path, 'rb') as f:
+#         file = f.read()
+#     sentances = extract_sentences(file)
+#     print(sentances)
