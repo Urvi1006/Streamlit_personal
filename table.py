@@ -559,6 +559,7 @@ def extract_tables_algo(pdf_path, output_folder_name):
         df.to_csv(csv_file_path, index=False, header=False)
 
     print(f"Total number of tables extracted: {total_tables}")
+
 def dual_pipeline(pdf_path):
     # # Extract text from the PDF
     # text = extract_text_from_pdf(pdf_path)
@@ -571,8 +572,19 @@ def dual_pipeline(pdf_path):
     #     print("Text length is less than or equal to 100 characters. Using regular extraction.")
         extract_tables(pdf_path, output_folder_name="OUTPUTS_MASTER/Output")
 
+def dual_pipeline_2(pdf_path):
+    # Extract text from the PDF
+    text = extract_text_from_pdf(pdf_path)
+    text = text.strip()
+
+    if len(text) > 100:
+        print("Text length is greater than 100 characters. Using algorithmic extraction.")
+        extract_tables_algo(pdf_path, output_folder_name="OUTPUTS_MASTER/Output")
+    else:
+        print("Text length is less than or equal to 100 characters. Using regular extraction.")
+        extract_tables(pdf_path, output_folder_name="OUTPUTS_MASTER/Output")
 
 if __name__ == "__main__":
     
     # dual_pipeline('data\pdf\Basic Injection Molding Design Guidelines.pdf')
-    dual_pipeline("Injection_Molding_Design_Guidelines_2017.pdf")
+    dual_pipeline_2("Injection_Molding_Design_Guidelines_2017.pdf")
