@@ -489,21 +489,21 @@ class TableExtractionPipeline():
 
             return df
 
-# def extract_text_from_pdf(pdf_path):
-#     text = ""
-#     # Open the PDF file in binary mode
-#     with open(pdf_path, 'rb') as file:
-#         # Create a PdfFileReader object
-#         pdf_reader = PyPDF2.PdfReader(file)
+def extract_text_from_pdf(pdf_path):
+    text = ""
+    # Open the PDF file in binary mode
+    with open(pdf_path, 'rb') as file:
+        # Create a PdfFileReader object
+        pdf_reader = PyPDF2.PdfReader(file)
         
-#         # Iterate through each page and extract text
-#         for page_number in range(len(pdf_reader.pages)):
-#             # Get the page object
-#             page = pdf_reader.pages[page_number]
-#             # Extract text from the page
-#             text += page.extract_text()
+        # Iterate through each page and extract text
+        for page_number in range(len(pdf_reader.pages)):
+            # Get the page object
+            page = pdf_reader.pages[page_number]
+            # Extract text from the page
+            text += page.extract_text()
             
-#     return text
+    return text
 def extract_tables(pdf_path, output_folder_name='OUTPUTS_MASTER/output/images', output_csv_name='OUTPUTS_MASTER/output/tables'):
     # print("./data"+pdf_path.name,"<><><><><>>><><>><>><>>>><><")
     image_paths_list = pdf_to_images('./data/' + pdf_path.name, output_folder_name)
@@ -587,4 +587,4 @@ def dual_pipeline_2(pdf_path):
 if __name__ == "__main__":
     
     # dual_pipeline('data\pdf\Basic Injection Molding Design Guidelines.pdf')
-    dual_pipeline_2("Injection_Molding_Design_Guidelines_2017.pdf")
+    dual_pipeline_2("data\Xometry Sheet Metal Design Guide 2020.pdf")

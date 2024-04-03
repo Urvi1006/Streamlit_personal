@@ -8,8 +8,8 @@ joblib==1.1.1
 ctransformers==0.2.27
 timm==0.9.2
 torch==2.2.2
-torchaudio==2.1.1
-torchvision==0.16.1
+torchaudio==2.2.2
+torchvision==0.17.2
 transformers==4.39.1
 Pillow==10.0.1
 paddlepaddle==2.5.2
@@ -22,4 +22,4 @@ accelerate==0.28.0
 bitsandbytes==0.43.0
 sentence-transformers==2.3.1
 PyMuPDF==1.20.2
-
+streamlit==1.32.2
