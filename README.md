@@ -25,7 +25,7 @@ pip install -r requirements.txt
 ```bash
 pip install pymupdf --upgrade
 ```
-### If streamlit not installed 
+### (If streamlit not installed )
 ```bash
 pip install streamlit
 ```
@@ -45,4 +45,9 @@ The streamlit and table extraction take some time to run.
 ### Running the pipeline without streamlit
 ```bash
 python main.py
+```
+
+### Running the table extraction algorithmic method without streamlit
+```bash
+python table.py
 ```
