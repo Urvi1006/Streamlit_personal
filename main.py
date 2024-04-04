@@ -12,7 +12,12 @@ with open(pdf_path, 'rb') as f:
 
     # Extract rules from paragraph 
     rules = pipline.classifier(sentances)
+    print("RULES Start >>>>>>>>>>>>>>>>>>>>>>>>>>")
+    print(rules)
+    print("RULES end   >>>>>>>>>>>>>>>>>>>>>>>>>>")
 
     # Convert to JSON from rules 
     JSON = pipline.json_from_string(rules)
+    print("JSON Start >>>>>>>>>>>>>>>>>>>>>>>")
     print(JSON)
+    print("JSON end   >>>>>>>>>>>>>>>>>>>>>>>>")
