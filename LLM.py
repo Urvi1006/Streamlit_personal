@@ -470,12 +470,12 @@ Statement - '''
 
     def classifier(self, pdf_text_data: list[str]) -> list:                                #classifies the data into rules and not rules
         self.generator.warm_up()
-        rules_list = ""
+        rules_string = ""
 
         process_line = ""
         for line in pdf_text_data:
             
-            print(line)                             #Set the maximum possible token length to near 4000. Limit of Mistral is 7000
+                           #Set the maximum possible token length to near 4000. Limit of Mistral is 7000
             process_line += line
 
             if len(process_line.split()) < 1000:
@@ -483,11 +483,11 @@ Statement - '''
                  
             prompt = self.prompt_initial_classifier + process_line + '"'
             result = self.generator.run(prompt)["replies"][0]
-            rules_list += result                           #Splits the generated sentences into list of strings at [ & ] tokens
+            rules_string += result                           #Splits the generated sentences into list of strings at [ & ] tokens
             process_line = ""
 
-        print(rules_list.split("[]\n"))
-        return rules_list.split("[]\n")
+        rules_list = rules_string.splitlines()
+        return [i for i in rules_list if i]
 
     def pdf_query_function(self, pdf_text_data: list, pdf_path: str):                 #Function which takes in the pdf_text_data and the pdf path for mass processing of relevant data
         self.json_from_list(self.classifier(pdf_text_data), self.csv_path_gen(pdf_path))         #Takes the returned list of rules from classifier to the from_list funcntion and generates a .csv file
@@ -497,3 +497,4 @@ Statement - '''
         return csv_path + "_result.csv"
 
 
+       
